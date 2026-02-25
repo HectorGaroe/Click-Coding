@@ -4,7 +4,6 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
 
-    [SerializeField] private Button mainButton;
     [SerializeField] private TextMeshProUGUI text;
     public int totalClicks;
     private int resource;
@@ -13,23 +12,24 @@ public class Player : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        textWritter();
+        TextWritter();
         resource = 0;
     }
 
-    // Update is called once per frame
-    void Update()
+    void TextWritter()
     {
-        if (mainButton.getsMoney)
-        {
-            resource += 1;
-            mainButton.getsMoney = false;
-        }
-        textWritter();
+        text.text = "Nº de clicks: " + totalClicks + "\nDinero: " + resource.ToString();
     }
 
-    void textWritter()
+    public void AddResource(int amount)
     {
-        text.text = "Nº de clicks" + mainButton.getClicks() + "\nDinero: " + resource.ToString();
+        resource += amount;
+        TextWritter();
+    }
+
+    public void AddClicks(int numClicks)
+    {
+        totalClicks += numClicks;
+        TextWritter();
     }
 }

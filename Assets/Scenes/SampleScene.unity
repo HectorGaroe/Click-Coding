@@ -306,11 +306,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73b47934e05b53444b945ba0100d3fdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Button
-  contClick: 0
   spritePosition: 0
   material: {fileID: 2100000, guid: ab844873d8cddab42a578023549ee667, type: 2}
   max: 20
-  getsMoney: 0
 --- !u!114 &496008876
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -489,6 +487,7 @@ GameObject:
   - component: {fileID: 1625978515}
   - component: {fileID: 1625978514}
   - component: {fileID: 1625978513}
+  - component: {fileID: 1625978520}
   - component: {fileID: 1625978519}
   - component: {fileID: 1625978518}
   - component: {fileID: 1625978517}
@@ -630,9 +629,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e00d3f1851e4d20489efa037dd0d7d7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
-  mainButton: {fileID: 496008875}
   text: {fileID: 1752830638}
   totalClicks: 0
+--- !u!114 &1625978520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1625978512}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3c39efa1affd754a9f7b2f2bf757f9e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EventManager
+  player: {fileID: 1625978519}
 --- !u!1 &1752830636
 GameObject:
   m_ObjectHideFlags: 0
