@@ -49,8 +49,7 @@ public class AutoClicker : MonoBehaviour
         cycleTime = cycleTimes[cycleLvl];
     }
 
-    //Si midiesemos esto como lo habiamos hecho con el mainButton tendriamos que hacer que en la primera mejora(por ejemplo) el sprite saltara de dos en dos,
-    //y claro nosotros queremos que el progreso se vea en el sprite completamente?(como sube la barrita)
+
     void Progress(float deltaTime)
     {
         int progressPrcnt;

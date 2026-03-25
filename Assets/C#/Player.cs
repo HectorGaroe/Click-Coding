@@ -9,6 +9,7 @@ public class Player : MonoBehaviour
     public int totalClicks;
     private int resource;
     private int[] upgradeLvls;
+    private int resourcesPlus;
     private Action<int>[] upgradeActions;
     public Action<int> OnMoreResources;
     public Action<int> OnClickPower;
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour
     {
         TextWritter();
         resource = 0;
+        resourcesPlus = 0;
         upgradeLvls = new int[(int)UpgradeType.TYPES];
         upgradeActions = new Action<int>[]{
             OnMoreResources,
@@ -39,7 +41,7 @@ public class Player : MonoBehaviour
 
     public void AddResource(int amount)
     {
-        resource += amount;
+        resource += amount + resourcesPlus;
         TextWritter();
     }
 
@@ -63,5 +65,15 @@ public class Player : MonoBehaviour
     public void CreateClickerDEBUG(int numClickers)
     {
         SetUpgrade(numClickers, UpgradeType.AutoClickers);
+    }
+
+    public void MoreResourcesDEBUG(int numLevels)
+    {
+        SetUpgrade(numLevels, UpgradeType.MoreResources);
+    }
+
+    public void ClickPowerDEBUG(int numLevels)
+    {
+        SetUpgrade(numLevels, UpgradeType.ClickPower);
     }
 }

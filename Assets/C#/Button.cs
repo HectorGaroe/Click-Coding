@@ -12,8 +12,11 @@ public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, 
     
     [SerializeField] private int spritePosition;
     [SerializeField] private Material material;
-    [SerializeField] private int max = 1;
+    [SerializeField] private int maxSprite = 1;
     
+    private int resourcesPerCycle;
+    private int clickPower;
+
     //Info saver events
     private Action<int> adderAction;
     private Action<int> clickAction;
@@ -22,7 +25,8 @@ public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, 
     public Action<float> onUpdate;
     public Action<int> onClickerUpgrade;
 
-    
+
+
     public void Awake()
     {
         instanceHelper.Initilice();
@@ -31,6 +35,8 @@ public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, 
     public void Start()
     {
         spritePosition = 0;
+        resourcesPerCycle = 1;
+        clickPower = 1;
         material.SetFloat("_CurrentImage", 0f);
         adderAction += EventManager.instance.player.AddResource;
         clickAction += EventManager.instance.player.AddClicks;
@@ -58,42 +64,52 @@ public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, 
     public void Click()
     {
         clickAction?.Invoke(1);
-        spritePosition += 1;
+        spritePosition += clickPower;
+        Debug.Log("Sprite Position: " + spritePosition);
 
-
-        spritePosition = spritePosition % max;
-        if (spritePosition == 0)
-            adderAction?.Invoke(1);
+        //TODO: Plantear una logica en el reinicio del ciclo para que no de problemas con el click power,
+        //por ejemplo si el click power es 2 y el max sprite es 5, el ciclo se reiniciaria en 4, luego 6 (que se reinicia a 0) y luego 2
+        spritePosition = spritePosition % maxSprite;//Hay que asegurarse de que el sprite position no se pase del maximo, si se pasa vuelve a 0 y empieza de nuevo el ciclo
+        if (spritePosition == 0 || spritePosition > maxSprite)
+            adderAction?.Invoke(resourcesPerCycle);
 
         material.SetFloat("_CurrentImage", (float)spritePosition);//El String se refiere a la propiedad del shader
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        throw new System.NotImplementedException();
+        //Cuando el raton entra en el boton
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        throw new System.NotImplementedException();
+        //Cuando el raton sale del boton
     }
 
     public void OnPointerMove(PointerEventData eventData)
     {
-        throw new System.NotImplementedException();
+        //Cuando el raton se mueve dentro del boton
     }
 
 
     #region Upgrade Methods
 
-    public void OnMoreResources(int newLvl)
+    public void OnMoreResources(int numLvls)
     {
-        
+        // newLvl = the level of the upgrade; if 1 -> obtain 2 resources per cycle
+        resourcesPerCycle += numLvls;
     }
     
-    public void OnClickPower(int newLvl)
+    public void OnClickPower(int numLvls)
     {
-        
+        if(clickPower == 1)
+        {
+            clickPower = 2;
+            Debug.Log("Click Power: " + clickPower);
+            return;
+        }
+        clickPower += numLvls;//Tiene que ser un numero par para que no de problemas el reinicio del ciclo
+        Debug.Log("Click Power: " + clickPower);
     }
     
     public void OnAutoClickers(int newLvl)
