@@ -1,6 +1,7 @@
 using Mono.Cecil;
 using System;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -67,13 +68,20 @@ public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, 
         spritePosition += clickPower;
         Debug.Log("Sprite Position: " + spritePosition);
 
-        //TODO: Plantear una logica en el reinicio del ciclo para que no de problemas con el click power,
-        //por ejemplo si el click power es 2 y el max sprite es 5, el ciclo se reiniciaria en 4, luego 6 (que se reinicia a 0) y luego 2
+        if (spritePosition >= maxSprite)
+            AddResources();
         spritePosition = spritePosition % maxSprite;//Hay que asegurarse de que el sprite position no se pase del maximo, si se pasa vuelve a 0 y empieza de nuevo el ciclo
-        if (spritePosition == 0 || spritePosition > maxSprite)
-            adderAction?.Invoke(resourcesPerCycle);
 
         material.SetFloat("_CurrentImage", (float)spritePosition);//El String se refiere a la propiedad del shader
+    }
+
+    private void AddResources()
+    {
+        int max = (spritePosition / maxSprite);
+        for (int cont = 0; cont < max; cont++)
+        {
+            adderAction?.Invoke(resourcesPerCycle);
+        }
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -105,11 +113,9 @@ public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, 
         if(clickPower == 1)
         {
             clickPower = 2;
-            Debug.Log("Click Power: " + clickPower);
             return;
         }
-        clickPower += numLvls;//Tiene que ser un numero par para que no de problemas el reinicio del ciclo
-        Debug.Log("Click Power: " + clickPower);
+        clickPower += numLvls;
     }
     
     public void OnAutoClickers(int newLvl)
@@ -119,7 +125,7 @@ public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, 
     
     public void OnClickerClickPower(int newLvl)
     {
-        
+        instanceHelper.AutoClickerPwrUpgrader(newLvl);
     }
     
     public void OnLessCrash(int newLvl)

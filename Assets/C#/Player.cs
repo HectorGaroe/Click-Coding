@@ -76,4 +76,9 @@ public class Player : MonoBehaviour
     {
         SetUpgrade(numLevels, UpgradeType.ClickPower);
     }
+
+    public void ClickerPowerDEBUG(int numLevels)
+    {
+        SetUpgrade(numLevels, UpgradeType.ClickerClickPower);
+    }
 }

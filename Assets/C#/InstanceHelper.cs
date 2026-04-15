@@ -41,4 +41,12 @@ public class InstanceHelper
             numActiveClickers++;
         }
     }
+
+    public void AutoClickerPwrUpgrader(int newLvl)
+    {
+        for (int i = 0; i < numMaxClicker; i++)
+        {
+            clickers[i].OnRefreshLvl(newLvl);
+        }
+    }
 }
