@@ -12,18 +12,19 @@ public class AutoClicker : MonoBehaviour
     private float cycleTime;
     private float nextClick;
     private float progressTime;
+    private int clickerPower;
     private readonly float[] cycleTimes = new float[] { 10f, 7f, 6f, 4f, 2f, 0.01f };//Ejemplo de tiempos de ciclo para cada nivel
 
-    public void WakeyWakey()
+    public void WakeyWakey(int clickPwrLvl = 1)
     {
         progressImage.material = new Material(instanceMaterial);
         material = progressImage.material;
         gameObject.SetActive(false);
     }
 
-    public void Activate(Button mainButton, int cycleLvl)
+    public void Activate(Button mainButton, int clickerPwrLvl = 1)
     {
-        OnRefreshLvl(cycleLvl);
+        OnRefreshLvl(clickerPwrLvl);
         this.mainButton = mainButton;
         this.mainButton.onUpdate += OnUpdate;
         this.mainButton.onClickerUpgrade += OnRefreshLvl;
@@ -38,15 +39,18 @@ public class AutoClicker : MonoBehaviour
         {
             nextClick += cycleTime;
             progressTime = 0;
-            mainButton.Click();
+            Debug.Log("Clicker Clicked|Click power: " + clickerPower);
+            mainButton.ClickerClick(clickerPower);
         }
         Progress(deltaTime);
     }
 
-    public void OnRefreshLvl(int cycleLvl)
+    public void OnRefreshLvl(int clickerPwrLvl)
     {
+        clickerPower += clickerPwrLvl;
+        cycleTime = cycleTimes[0];//TO-DO:Mientras que la mejora de duración del ciclo no esté implementada, el tiempo de ciclo se mantendrá en el del nivel 0
         //Aqui tabla de nivel -> tiempo de ciclo
-        cycleTime = cycleTimes[cycleLvl];
+        //cycleTime = cycleTimes[cycleLvl];
     }
 
 

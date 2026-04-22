@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 using TMPro;
 using UnityEngine;
 
@@ -59,7 +60,17 @@ public class Player : MonoBehaviour
     public void SetUpgrade(int newLvl, UpgradeType upg)
     {
         upgradeActions[(int)upg]?.Invoke(newLvl);
-        upgradeLvls[(int)upg] = newLvl;
+        upgradeLvls[(int)upg] += newLvl;
+
+        Debug.Log("Upgrade " + upg.ToString() + " set to level " + upgradeLvls[(int)upg]);
+        int cont = 0;
+        StringBuilder stringBuilder = new StringBuilder();
+        foreach (int lvl in upgradeLvls)
+        {
+            stringBuilder.AppendLine("Level of upgrade " + cont + ": " + upgradeLvls[cont]);
+            cont++;
+        }
+        Debug.Log(stringBuilder.ToString());
     }
 
     public void CreateClickerDEBUG(int numClickers)
@@ -77,7 +88,7 @@ public class Player : MonoBehaviour
         SetUpgrade(numLevels, UpgradeType.ClickPower);
     }
 
-    public void ClickerPowerDEBUG(int numLevels)
+    public void ClickerClickPowerDEBUG(int numLevels)
     {
         SetUpgrade(numLevels, UpgradeType.ClickerClickPower);
     }

@@ -12,13 +12,14 @@ public class InstanceHelper
 
     private AutoClicker[] clickers;
     private int numActiveClickers;
+    private int clickerClickPwr;
 
 
     public void Initilice()
     {
         AutoClickerCreator();
         numActiveClickers = 0;
-
+        clickerClickPwr = 0;
     }
 
     private void AutoClickerCreator()
@@ -28,25 +29,26 @@ public class InstanceHelper
         {
             GameObject clickerInstance = GameObject.Instantiate(clickerPrefab, clickerServer);
             clickers[i] = clickerInstance.GetComponent<AutoClicker>();
-            clickers[i].WakeyWakey();
+            clickers[i].WakeyWakey(clickerClickPwr);
         }
     }
 
-    public void ActivateClicker(Button mainButton, int clickerLvl)
+    public void ActivateClicker(Button mainButton, int clickerClickPower)
     {
             
         if(numActiveClickers < numMaxClicker)
         {
-            clickers[numActiveClickers].Activate(mainButton, clickerLvl);
+            clickers[numActiveClickers].Activate(mainButton, clickerClickPower);
             numActiveClickers++;
         }
     }
 
-    public void AutoClickerPwrUpgrader(int newLvl)
+    public void AutoClickerPwrUpgrader(int newClickPwrLvl)
     {
+        clickerClickPwr = newClickPwrLvl;
         for (int i = 0; i < numMaxClicker; i++)
         {
-            clickers[i].OnRefreshLvl(newLvl);
+            clickers[i].OnRefreshLvl(newClickPwrLvl);
         }
     }
 }

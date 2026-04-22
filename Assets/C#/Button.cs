@@ -66,11 +66,21 @@ public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, 
     {
         clickAction?.Invoke(1);
         spritePosition += clickPower;
-        Debug.Log("Sprite Position: " + spritePosition);
 
         if (spritePosition >= maxSprite)
             AddResources();
-        spritePosition = spritePosition % maxSprite;//Hay que asegurarse de que el sprite position no se pase del maximo, si se pasa vuelve a 0 y empieza de nuevo el ciclo
+        spritePosition = spritePosition % maxSprite;
+
+        material.SetFloat("_CurrentImage", (float)spritePosition);//El String se refiere a la propiedad del shader
+    }
+
+    public void ClickerClick(int clickerPwrLvl)
+    {
+        spritePosition += clickerPwrLvl;
+        
+        if (spritePosition >= maxSprite)
+            AddResources();
+        spritePosition = spritePosition % maxSprite;
 
         material.SetFloat("_CurrentImage", (float)spritePosition);//El String se refiere a la propiedad del shader
     }
@@ -118,14 +128,14 @@ public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, 
         clickPower += numLvls;
     }
     
-    public void OnAutoClickers(int newLvl)
+    public void OnAutoClickers(int newClickerClickPowerLvl)
     {
-        instanceHelper.ActivateClicker(this, newLvl);
+        instanceHelper.ActivateClicker(this, newClickerClickPowerLvl);
     }
     
-    public void OnClickerClickPower(int newLvl)
+    public void OnClickerClickPower(int newClickPwrLvl)
     {
-        instanceHelper.AutoClickerPwrUpgrader(newLvl);
+        instanceHelper.AutoClickerPwrUpgrader(newClickPwrLvl);
     }
     
     public void OnLessCrash(int newLvl)
