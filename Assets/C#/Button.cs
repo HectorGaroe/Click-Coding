@@ -49,7 +49,6 @@ public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, 
         EventManager.instance.player.OnClickerClickPower += OnClickerClickPower;
         EventManager.instance.player.OnLessCrash += OnLessCrash;
 
-
     }
 
     public void Update()
@@ -115,17 +114,12 @@ public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, 
     public void OnMoreResources(int numLvls)
     {
         // newLvl = the level of the upgrade; if 1 -> obtain 2 resources per cycle
-        resourcesPerCycle += numLvls;
+        resourcesPerCycle = 1 + numLvls;
     }
     
     public void OnClickPower(int numLvls)
     {
-        if(clickPower == 1)
-        {
-            clickPower = 2;
-            return;
-        }
-        clickPower += numLvls;
+        clickPower = 1 + numLvls;
     }
     
     public void OnAutoClickers(int newClickerClickPowerLvl)
