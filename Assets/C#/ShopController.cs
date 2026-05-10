@@ -2,8 +2,6 @@ using System;
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
-using UnityEngine.UI;
-using Unity.VisualScripting;
 
 public class Shop : MonoBehaviour
 {
@@ -52,6 +50,7 @@ public class Shop : MonoBehaviour
         int cost = costs[index].costs.Length > upgrade ? costs[index].costs[upgrade] : -1; // Si el costo para el siguiente nivel no está definido, se asigna -1
         return costs[index].buttonName + (upgrade == 0 ? "" : " Lvl" + upgrade.ToString()) + (cost == -1 ? "\nMax." : "\n<size=15px>Costo:" + cost);
     }
+
 
     public void Upgrade(int index)
     {

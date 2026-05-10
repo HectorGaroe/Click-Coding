@@ -28,7 +28,6 @@ public class Player : MonoBehaviour
         SaveDataController.Initialize(Application.persistentDataPath);
     }
 
-
     //Sale de la aplicación forzando el guardado del progreso actual
     public void Exit()
     {
