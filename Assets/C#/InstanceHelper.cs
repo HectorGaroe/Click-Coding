@@ -13,6 +13,7 @@ public class InstanceHelper
     private AutoClicker[] clickers;
     private int numActiveClickers;
     private int clickerClickPwr;
+    private int lastClickerLevel;
 
 
     public void Initilice()
@@ -20,6 +21,7 @@ public class InstanceHelper
         AutoClickerCreator();
         numActiveClickers = 0;
         clickerClickPwr = 0;
+        lastClickerLevel = 0;
     }
 
     private void AutoClickerCreator()
@@ -35,11 +37,15 @@ public class InstanceHelper
 
     public void ActivateClicker(Button mainButton, int clickerClickPower)
     {
-            
-        if(numActiveClickers < numMaxClicker)
+        
+        if(clickerClickPower - 1 >= 0 && numActiveClickers < numMaxClicker)
         {
-            clickers[numActiveClickers].Activate(mainButton, clickerClickPower);
-            numActiveClickers++;
+            int clickerIndex = clickerClickPower;
+            for(int i = lastClickerLevel; i < clickerIndex; i++)
+            {
+                clickers[numActiveClickers++].Activate(mainButton);
+            }
+            lastClickerLevel = clickerIndex;
         }
     }
 

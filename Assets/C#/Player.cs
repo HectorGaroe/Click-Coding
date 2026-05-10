@@ -1,7 +1,9 @@
 using System;
-using System.Text;
+using System.Collections;
 using TMPro;
+using Unity.VectorGraphics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -11,6 +13,7 @@ public class Player : MonoBehaviour
     private int resource;
     private int[] upgradeLvls;
     private int resourcesPlus;
+    private float extraTime;
     private Action<int>[] upgradeActions;
     public Action<int> OnMoreResources;
     public Action<int> OnClickPower;
@@ -19,13 +22,37 @@ public class Player : MonoBehaviour
     public Action<int> OnLessCrash;
 
 
+    private void Awake()
+    {
+        extraTime = 0f;
+        SaveDataController.Initialize(Application.persistentDataPath);
+    }
+
+
+    //Sale de la aplicación forzando el guardado del progreso actual
+    public void Exit()
+    {
+        OnSaveGame();
+
+        #if UNITY_EDITOR
+                UnityEditor.EditorApplication.isPlaying = false;
+        #else
+                Application.Quit();
+        #endif
+    }
+
+    public void ResetProgress()
+    {
+        StartCoroutine(ResetGame());
+    }
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        TextWritter();
-        resource = 0;
-        resourcesPlus = 0;
-        upgradeLvls = new int[(int)UpgradeType.TYPES];
+        totalClicks = SaveDataController.GetPlayerClicks();
+        resource = SaveDataController.GetResources();
+        upgradeLvls = SaveDataController.GetUpgradeLevels();
         upgradeActions = new Action<int>[]{
             OnMoreResources,
             OnClickPower,
@@ -33,11 +60,41 @@ public class Player : MonoBehaviour
             OnClickerClickPower,
             OnLessCrash
         };
+        ClickPower(upgradeLvls[(int)UpgradeType.ClickPower]);
+        MoreResources(upgradeLvls[(int)UpgradeType.MoreResources]);
+        CreateClicker(upgradeLvls[(int)UpgradeType.AutoClickers]);
+        ClickerClickPower(upgradeLvls[(int)UpgradeType.ClickerClickPower]);
+        TextWritter();
+        InputManager.Instance.EnableInputs();
+        InputManager.Instance.saveAction += OnSaveGame;
+    }
+
+    private void OnDestroy()
+    {
+        InputManager.Instance.saveAction -= OnSaveGame;
+        InputManager.Instance.DisableInputs();
+    }
+
+    private void OnSaveGame()
+    {
+        SaveDataController.SetData(totalClicks, resource, Time.timeSinceLevelLoad - extraTime, upgradeLvls);
+        extraTime = Time.timeSinceLevelLoad;
+        SaveDataController.SaveData();
     }
 
     void TextWritter()
     {
         text.text = "Nº de clicks: " + totalClicks + "\nDinero: " + resource.ToString();
+    }
+
+    public int GetResources()
+    {
+        return resource;
+    }
+
+    public void RefreshText()
+    {
+        TextWritter();
     }
 
     public void AddResource(int amount)
@@ -59,37 +116,45 @@ public class Player : MonoBehaviour
     
     public void SetUpgrade(int newLvl, UpgradeType upg)
     {
-        upgradeActions[(int)upg]?.Invoke(newLvl);
         upgradeLvls[(int)upg] += newLvl;
-
-        Debug.Log("Upgrade " + upg.ToString() + " set to level " + upgradeLvls[(int)upg]);
-        int cont = 0;
-        StringBuilder stringBuilder = new StringBuilder();
-        foreach (int lvl in upgradeLvls)
-        {
-            stringBuilder.AppendLine("Level of upgrade " + cont + ": " + upgradeLvls[cont]);
-            cont++;
-        }
-        Debug.Log(stringBuilder.ToString());
+        upgradeActions[(int)upg]?.Invoke(upgradeLvls[(int)upg]);
     }
 
-    public void CreateClickerDEBUG(int numClickers)
+    public void CreateClicker(int numClickers)
     {
         SetUpgrade(numClickers, UpgradeType.AutoClickers);
     }
 
-    public void MoreResourcesDEBUG(int numLevels)
+    public void MoreResources(int numLevels)
     {
         SetUpgrade(numLevels, UpgradeType.MoreResources);
     }
 
-    public void ClickPowerDEBUG(int numLevels)
+    public void ClickPower(int numLevels)
     {
         SetUpgrade(numLevels, UpgradeType.ClickPower);
     }
 
-    public void ClickerClickPowerDEBUG(int numLevels)
+    public void ClickerClickPower(int numLevels)
     {
         SetUpgrade(numLevels, UpgradeType.ClickerClickPower);
+    }
+
+    public void LessCrash(int numLevels)
+    {
+        //SetUpgrade(numLevels, UpgradeType.LessCrash);
+    }
+
+    private IEnumerator ResetGame()
+    {
+        UnityEngine.SceneManagement.Scene lastScene = SceneManager.GetActiveScene();
+        yield return SceneManager.LoadSceneAsync("MainMenuScene", LoadSceneMode.Additive);
+        AsyncOperation unloadOp = SceneManager.UnloadSceneAsync(lastScene);
+        unloadOp.completed += op =>
+        {
+            SaveDataController.ResetData();
+            SaveDataController.SaveData();
+            SceneManager.SetActiveScene(SceneManager.GetSceneByName("MainMenuScene"));
+        };
     }
 }

@@ -1,11 +1,8 @@
-using Mono.Cecil;
+using DG.Tweening;
 using System;
-using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-using static System.Net.Mime.MediaTypeNames;
 
 public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, IPointerExitHandler, IPointerEnterHandler
 {
@@ -14,6 +11,7 @@ public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, 
     [SerializeField] private int spritePosition;
     [SerializeField] private Material material;
     [SerializeField] private int maxSprite = 1;
+    [SerializeField] private Image image;
     
     private int resourcesPerCycle;
     private int clickPower;
@@ -49,7 +47,6 @@ public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, 
         EventManager.instance.player.OnClickerClickPower += OnClickerClickPower;
         EventManager.instance.player.OnLessCrash += OnLessCrash;
 
-
     }
 
     public void Update()
@@ -64,6 +61,8 @@ public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, 
 
     public void Click()
     {
+        image.transform.DOKill(true);
+        image.transform.DOScale(new Vector3(1.2f, 1.2f, 1.2f), 0.1f).SetLoops(2, LoopType.Yoyo).SetEase(Ease.OutBack).Play();
         clickAction?.Invoke(1);
         spritePosition += clickPower;
 
@@ -115,17 +114,12 @@ public class Button : MonoBehaviour, IPointerMoveHandler, IPointerClickHandler, 
     public void OnMoreResources(int numLvls)
     {
         // newLvl = the level of the upgrade; if 1 -> obtain 2 resources per cycle
-        resourcesPerCycle += numLvls;
+        resourcesPerCycle = 1 + numLvls;
     }
     
     public void OnClickPower(int numLvls)
     {
-        if(clickPower == 1)
-        {
-            clickPower = 2;
-            return;
-        }
-        clickPower += numLvls;
+        clickPower = 1 + numLvls;
     }
     
     public void OnAutoClickers(int newClickerClickPowerLvl)

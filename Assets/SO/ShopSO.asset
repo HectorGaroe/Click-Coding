@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92ebbb90075059e49b67f99f168b6c10, type: 3}
+  m_Name: ShopSO
+  m_EditorClassIdentifier: Assembly-CSharp::ShopSO
+  upgradeCosts:
+  - buttonName: More resources
+    type: 0
+    costs: 0200000003000000
+  - buttonName: Click power
+    type: 1
+    costs: 0100000005000000
+  - buttonName: Clicker
+    type: 2
+    costs: 010000000200000005000000050000000500000005000000
+  - buttonName: Clicker Click Power
+    type: 3
+    costs: 0a0000000f000000
