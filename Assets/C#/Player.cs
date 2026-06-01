@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using TMPro;
-using Unity.VectorGraphics;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,11 +8,14 @@ public class Player : MonoBehaviour
 {
 
     [SerializeField] private TextMeshProUGUI text;
+    [SerializeField] private GameObject saveSelector;
+    [SerializeField] private GameObject updateButtonContainer;
     public int totalClicks;
     private int resource;
     private int[] upgradeLvls;
     private int resourcesPlus;
     private float extraTime;
+    private string saveFileName = "NULL";
     private Action<int>[] upgradeActions;
     public Action<int> OnMoreResources;
     public Action<int> OnClickPower;
@@ -28,7 +30,7 @@ public class Player : MonoBehaviour
         SaveDataController.Initialize(Application.persistentDataPath);
     }
 
-    //Sale de la aplicación forzando el guardado del progreso actual
+    //Sale de la aplicacion forzando el guardado del progreso actual
     public void Exit()
     {
         OnSaveGame();
@@ -36,7 +38,7 @@ public class Player : MonoBehaviour
         #if UNITY_EDITOR
                 UnityEditor.EditorApplication.isPlaying = false;
         #else
-                Application.Quit();
+                        Application.Quit();
         #endif
     }
 
@@ -49,6 +51,12 @@ public class Player : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        InputManager.Instance.EnableInputs();
+        InputManager.Instance.saveAction += OnSaveGame;
+    }
+
+    void SetPlayerData()
+    {
         totalClicks = SaveDataController.GetPlayerClicks();
         resource = SaveDataController.GetResources();
         upgradeLvls = SaveDataController.GetUpgradeLevels();
@@ -59,17 +67,15 @@ public class Player : MonoBehaviour
             OnClickerClickPower,
             OnLessCrash
         };
-        ClickPower(upgradeLvls[(int)UpgradeType.ClickPower]);
-        MoreResources(upgradeLvls[(int)UpgradeType.MoreResources]);
-        CreateClicker(upgradeLvls[(int)UpgradeType.AutoClickers]);
-        ClickerClickPower(upgradeLvls[(int)UpgradeType.ClickerClickPower]);
-        TextWritter();
-        InputManager.Instance.EnableInputs();
-        InputManager.Instance.saveAction += OnSaveGame;
+        //ClickPower(upgradeLvls[(int)UpgradeType.ClickPower]);
+        //MoreResources(upgradeLvls[(int)UpgradeType.MoreResources]);
+        //CreateClicker(upgradeLvls[(int)UpgradeType.AutoClickers]);
+        //ClickerClickPower(upgradeLvls[(int)UpgradeType.ClickerClickPower]);
     }
 
     private void OnDestroy()
     {
+        TextWritter();
         InputManager.Instance.saveAction -= OnSaveGame;
         InputManager.Instance.DisableInputs();
     }
@@ -78,12 +84,22 @@ public class Player : MonoBehaviour
     {
         SaveDataController.SetData(totalClicks, resource, Time.timeSinceLevelLoad - extraTime, upgradeLvls);
         extraTime = Time.timeSinceLevelLoad;
-        SaveDataController.SaveData();
+        SaveDataController.SaveDataTest(saveFileName);
     }
 
     void TextWritter()
     {
-        text.text = "Nº de clicks: " + totalClicks + "\nDinero: " + resource.ToString();
+        text.text = "Numero de clicks: " + totalClicks + "\nDinero: " + resource.ToString();
+    }
+
+    public void SetSaveFileName(string fileName)
+    {
+        saveFileName = fileName;
+        SaveDataController.Initialize(Application.persistentDataPath, saveFileName);
+        SetPlayerData();
+        TextWritter();
+        updateButtonContainer.GetComponent<Shop>().enabled = true;
+        saveSelector.SetActive(false);
     }
 
     public int GetResources()
@@ -112,7 +128,7 @@ public class Player : MonoBehaviour
     {
         return upgradeLvls[(int)upg];
     }
-    
+
     public void SetUpgrade(int newLvl, UpgradeType upg)
     {
         upgradeLvls[(int)upg] += newLvl;
@@ -152,7 +168,7 @@ public class Player : MonoBehaviour
         unloadOp.completed += op =>
         {
             SaveDataController.ResetData();
-            SaveDataController.SaveData();
+            SaveDataController.SaveDataTest(saveFileName);
             SceneManager.SetActiveScene(SceneManager.GetSceneByName("MainMenuScene"));
         };
     }

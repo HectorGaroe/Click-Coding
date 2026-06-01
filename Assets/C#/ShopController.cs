@@ -37,7 +37,6 @@ public class Shop : MonoBehaviour
         for (int i = 0; i < auxLength; i++)
         {
             Costs auxDebug = costs[i];
-            Debug.Log("Upgrade type: " + auxDebug.type + "\nActual index: " + i);
 
             remap[i] = (int)costs[i].type;
             upgradeText[i].text = FormatButtonLabel(i);
@@ -51,9 +50,18 @@ public class Shop : MonoBehaviour
         return costs[index].buttonName + (upgrade == 0 ? "" : " Lvl" + upgrade.ToString()) + (cost == -1 ? "\nMax." : "\n<size=15px>Costo:" + cost);
     }
 
+    public void RefreshUpgradeButtons()
+    {
+        int auxLength = costs.Length;
+
+        for (int i = 0; i < auxLength; i++)
+            upgradeText[i].text = FormatButtonLabel(i);
+    }
+
 
     public void Upgrade(int index)
     {
+        Debug.Log("Remap array: " + string.Join(", ", remap));
         int upgradeIndex = remap[index];//La posición del upgrade en el array de ShopSO, que es la que se le pasa al método, se remapea a la posición del upgrade en el enum UpgradeType, que es la que se le pasa a los métodos de Player.
         int auxCost;
 

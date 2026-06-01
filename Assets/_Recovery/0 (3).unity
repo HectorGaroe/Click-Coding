@@ -3097,13 +3097,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1625978512}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49d44392a1c227747b0ddfe3c1851092, type: 3}
+  m_Script: {fileID: 11500000, guid: e00d3f1851e4d20489efa037dd0d7d7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player
   text: {fileID: 1752830638}
-  saveSelector: {fileID: 458134271}
+  saveFilePanel: {fileID: 458134271}
   updateButtonContainer: {fileID: 438655555}
   totalClicks: 0
+  saveFileName: NULL
 --- !u!114 &1625978520
 MonoBehaviour:
   m_ObjectHideFlags: 0

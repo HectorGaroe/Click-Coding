@@ -30,6 +30,7 @@ public class SaveData
         this.resources = resources;
         this.playTime += playTime;
         this.upgradeLevels = upgradeLevels;
+        Debug.Log("Data set: " + playerClicks + " clicks, " + resources + " resources, " + playTime + " playtime, upgrade levels: " + string.Join(", ", upgradeLevels));
     }
 
     # region Getters
@@ -50,7 +51,7 @@ public class SaveData
             this.resources = resources;
         }
         public void SetPlayTime(float playTime) => this.playTime += playTime;
-        public void SetUpgradeLevels(int[] upgradeLevels) => this.upgradeLevels = upgradeLevels;
+        public void SetUpgradeLevels(int[] upgradeLevels) { this.upgradeLevels = upgradeLevels; Debug.Log("Upgrade levels set: " + string.Join(", ", upgradeLevels)); }
     
     #endregion
 
